@@ -1,0 +1,40 @@
+import express  from "express";
+import multer from 'multer';
+import commandLineArgs, { OptionDefinition } from 'command-line-args';
+import { check, validationResult, param } from 'express-validator';
+const upload = multer({ dest: '../uploads/' }); // Pour les données form-data et multipart form data
+
+const app = express();
+app.use('/static', express.static(__dirname + '/../public'));
+app.use( express.urlencoded({ extended: true }) );
+
+// Process CLI
+const optionDefinitions: OptionDefinition[] = [
+    { name: 'port', alias: 'p', type: Number },
+];
+const options = commandLineArgs(optionDefinitions)
+
+// Define HTTP API
+app.get('/api/addition', upload.none(), [check('a').isNumeric(), check('b').isNumeric()], (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        const a = +req.body.a;
+        const b = +req.body.b;
+        res.status(200).send( `${a + b}` );
+    } else {
+        res.status(422).json({ errors: errors.array()});
+    }
+});
+
+app.post('/api/upload', upload.none() );
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+
+// Start HTTP serveur
+const port = options.port ?? 3000;
+app.listen(port, () => {
+    console.log(`HTTP server listening at http://localhost:${port}`);
+});
