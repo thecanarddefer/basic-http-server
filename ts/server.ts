@@ -31,6 +31,37 @@ app.get('/api/addition', upload.none(), [check('a').isNumeric(), check('b').isNu
         res.status(422).json({ errors: errors.array()});
     }
 });
+app.get('/api/mult', upload.none(), [check('a').isNumeric(), check('b').isNumeric()], (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        const a = +req.body.a;
+        const b = +req.body.b;
+        res.status(200).send( `${a * b}` );
+    } else {
+        res.status(422).json({ errors: errors.array()});
+    }
+});
+app.get('/api/sous', upload.none(), [check('a').isNumeric(), check('b').isNumeric()], (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        const a = +req.body.a;
+        const b = +req.body.b;
+        res.status(200).send( `${a - b}` );
+    } else {
+        res.status(422).json({ errors: errors.array()});
+    }
+});
+app.get('/api/div', upload.none(), [check('a').isNumeric(), check('b').isNumeric()], (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        const a = +req.body.a;
+        const b = +req.body.b;
+        res.status(200).send( `${a / b}` );
+    } else {
+        res.status(422).json({ errors: errors.array()});
+    }
+});
+
 
 app.post('/api/upload', upload.none() );
 
